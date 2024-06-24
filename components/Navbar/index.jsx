@@ -100,7 +100,7 @@ export default () => {
             <nav className={`relative z-20 bg-white w-full md:static md:text-sm md:border-none ${state ? "shadow-lg rounded-b-xl md:shadow-none" : ""}`}>
                 <div className="items-center gap-x-14 px-4 max-w-screen-xl mx-auto md:flex md:px-8">
                     <div className="flex items-center justify-between py-3 md:py-5 md:block">
-                        <a href="javascript:void(0)">
+                        <a href="/">
                             <img
                                 src="https://www.floatui.com/logo.svg"
                                 width={120}
