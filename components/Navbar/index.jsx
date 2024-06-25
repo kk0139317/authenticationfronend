@@ -85,7 +85,8 @@ export default () => {
         { title: "Features", path: "javascript:void(0)", isDrapdown: true, navs: dropdownNavs },
         { title: "Integrations", path: "javascript:void(0)", isDrapdown: false },
         { title: "Customers", path: "javascript:void(0)", isDrapdown: false },
-        { title: "Pricing", path: "javascript:void(0)", isDrapdown: false }
+        { title: "Pricing", path: "javascript:void(0)", isDrapdown: false },
+        { title: "Generate", path: "generate", isDrapdown: false }
     ]
 
     useEffect(() => {
