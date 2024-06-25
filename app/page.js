@@ -9,6 +9,7 @@ import FAQS from "@/components/FAQS";
 import Stats from "@/components/Stats";
 import Newsletter from "@/components/Newsletter";
 import LogoGrid from "@/components/LogoGrid";
+import CTASECTION from "@/components/CTASECTION";
 export default function Home() {
   
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       <ContactSection/>
       <FAQS />
       <Stats />
+      <CTASECTION />
       <Newsletter/>
       <LogoGrid />
     
