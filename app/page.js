@@ -10,12 +10,14 @@ import Stats from "@/components/Stats";
 import Newsletter from "@/components/Newsletter";
 import LogoGrid from "@/components/LogoGrid";
 import CTASECTION from "@/components/CTASECTION";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 export default function Home() {
   
   return (
     
     <>
-
+      <Header />
       <HeroSection />
       <FeatureSection />
       <Feature_t />
@@ -28,6 +30,7 @@ export default function Home() {
       <CTASECTION />
       <Newsletter/>
       <LogoGrid />
+      <Footer/>
     
     </>
   );

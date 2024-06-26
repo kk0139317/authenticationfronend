@@ -3,62 +3,8 @@ import { useState } from "react"
 
 export default () => {
 
-    const [state, setState] = useState(false)
-
-    // Replace javascript:void(0) path with your path
-    const navigation = [
-        { title: "Partners", path: "javascript:void(0)" },
-        { title: "Customers", path: "javascript:void(0)" },
-        { title: "Team", path: "javascript:void(0)" },
-
-    ]
-
     return (
         <>
-            {/* <nav className="relative items-center pt-5 px-4 mx-auto max-w-screen-xl sm:px-8 md:flex md:space-x-6">
-                <div className="flex justify-between">
-                    <a href="javascript:void(0)">
-                        <img
-                            src="https://www.floatui.com/logo.svg"
-                            width={120}
-                            height={50}
-                            alt="Float UI logo"
-                        />
-                    </a>
-                    <button className="text-gray-500 outline-none md:hidden"
-                        onClick={() => setState(!state)}
-                    >
-                        {
-                            state ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            ) : (
-
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                            )
-                        }
-                    </button>
-                </div>
-                <ul className={`flex-1 justify-between mt-12 md:text-sm md:font-medium md:flex md:mt-0 ${state ? 'absolute inset-x-0 px-4 border-b bg-white md:border-none md:static' : 'hidden'}`}>
-                    <div className="items-center space-y-5 md:flex md:space-x-6 md:space-y-0 md:ml-12">
-                        {
-                            navigation.map((item, idx) => (
-                                <li className="text-gray-500 hover:text-indigo-600" key={idx}>
-                                    <a href={item.path}>{item.title}</a>
-                                </li>
-                            ))
-                        }
-                    </div>
-                    <li className="order-2 py-5 md:py-0">
-                        <a href="javascript:void(0)" className="py-2 px-5 rounded-lg font-medium text-white text-center bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 duration-150 block md:py-3 md:inline">
-                            Get started
-                        </a>
-                    </li>
-                </ul>
-            </nav> */}
             <section className="py-28">
                 <div className="max-w-screen-xl mx-auto text-gray-600 gap-x-12 items-center justify-between overflow-hidden md:flex md:px-8">
                     <div className="flex-none space-y-5 px-4 sm:max-w-lg md:px-0 lg:max-w-xl">
@@ -66,10 +12,10 @@ export default () => {
                             Over 200 successful deals
                         </h1>
                         <h2 className="text-4xl text-gray-800 font-extrabold md:text-5xl">
-                            We help startups to grow and make money
+                            Generate images with Our Generative <span className="text-indigo-600">AI</span>
                         </h2>
                         <p>
-                            Sed ut perspiciatis unde omnis iste natus voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae.
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora aut vel ullam ipsa temporibus quibusdam error accusantium illo obcaecati mollitia!
                         </p>
                         <div className="items-center gap-x-3 space-y-3 sm:flex sm:space-y-0">
                             <a href="javascript:void(0)" className="block py-2 px-4 text-center text-white font-medium bg-indigo-600 duration-150 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg shadow-lg hover:shadow-none">
@@ -85,7 +31,7 @@ export default () => {
                     </div>
                     <div className="flex-none mt-14 md:mt-0 md:max-w-xl">
                         <img
-                            src="https://images.unsplash.com/photo-1573164713619-24c711fe7878?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1738&q=80"
+                            src="https://media.licdn.com/dms/image/D4E12AQHD2OCHyIxE4A/article-cover_image-shrink_720_1280/0/1685536497932?e=2147483647&v=beta&t=fNyPRa2Lzi_R3tuD66i8tVZb4uCqc6HdXqw-MH8oLpU"
                             className=" md:rounded-tl-[108px]"
                             alt=""
                         />
