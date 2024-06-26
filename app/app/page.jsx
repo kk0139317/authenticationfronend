@@ -4,7 +4,7 @@ import React from 'react'
 
 const app = () => {
   return (
-    <div>
+    <div className='h-screen flex flex-col  overflow-hidden ' >
         {/* <Header /> */}
         <Sidebar />
     </div>
