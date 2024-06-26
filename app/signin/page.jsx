@@ -1,10 +1,14 @@
 import React from 'react'
 import Signin from '@/components/Signin'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 const signin = () => {
   return (
-    <div>
+    <section className=' relative '>
+      <Header />
         <Signin />
-    </div>
+        <Footer />
+    </section>
   )
 }
 
