@@ -12,6 +12,7 @@ import LogoGrid from "@/components/LogoGrid";
 import CTASECTION from "@/components/CTASECTION";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
 export default function Home() {
   
   return (
@@ -22,7 +23,6 @@ export default function Home() {
       <FeatureSection />
       <Feature_t />
       <Pricing />
-
       <Testemonials />
       <ContactSection/>
       <FAQS />

@@ -31,6 +31,8 @@ const NavBar = () => {
                 d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
               ></path>
             </svg>
+
+
           </button>
           <a href="/" className="flex ms-2 md:me-24 items-center">
             <img
@@ -45,6 +47,7 @@ const NavBar = () => {
         </div>
         <div className="flex items-center">
           <div className="flex items-center ms-3 relative">
+          <a href="profile">
             <button
               type="button"
               className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300"
@@ -54,55 +57,12 @@ const NavBar = () => {
               <span className="sr-only">Open user menu</span>
               <img
                 className="w-8 h-8 rounded-full"
-                src="/docs/images/people/profile-picture-3.jpg"
+                src="https://img.freepik.com/free-vector/man-profile-account-picture_24908-81754.jpg?size=338&ext=jpg&ga=GA1.1.2116175301.1719273600&semt=ais_user"
                 alt="user photo"
               />
             </button>
-            <div
-              className="z-50 hidden my-4 text-base bg-white divide-y divide-gray-100 rounded shadow absolute right-0 top-10"
-              id="dropdown-user"
-            >
-              <div className="px-4 py-3">
-                <span className="block text-sm text-gray-900">Bonnie Green</span>
-                <span className="block text-sm text-gray-500 truncate">
-                  name@flowbite.com
-                </span>
-              </div>
-              <ul className="py-1">
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Settings
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Earnings
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Sign out
-                  </a>
-                </li>
-              </ul>
-            </div>
+                         
+            </a>
             <button
               onClick={logout}
               className="text-gray-800 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2 ms-2"
