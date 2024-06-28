@@ -1,9 +1,8 @@
-// components/GenerateImages.jsx
 import React, { useState, useEffect } from 'react';
 import useAuthRedirect from '@/utils/useAuthRedirect';
 import { useAuth } from '@/utils/auth';
 import LoadingSpinner from 'react-loading'; // Example: import a loading spinner component
-
+import Modal from '../Model';
 const GenerateImages = ({ prompt }) => {
   const [inputPrompt, setInputPrompt] = useState('');
   const [numImages, setNumImages] = useState(1);
@@ -11,6 +10,8 @@ const GenerateImages = ({ prompt }) => {
   const [loading, setLoading] = useState(false); // State for loading indicator
   const { token } = useAuthRedirect();
   const { username, logout } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentImages, setCurrentImages] = useState([]);
 
   useEffect(() => {
     if (prompt) {
@@ -89,6 +90,16 @@ const GenerateImages = ({ prompt }) => {
     }
   };
 
+  const openModal = (images) => {
+    setCurrentImages(images);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setCurrentImages([]);
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center py-0 px-4 sm:px-6 lg:px-8">
       {loading ? (
@@ -119,26 +130,48 @@ const GenerateImages = ({ prompt }) => {
           </div>
         </div>
       ) : (
-        <section className="w-full max-w-6xl mb-16 h-2/3 overflow-y-scroll absolute p-8">
+        <section className="w-full max-w-6xl mb-16 h-2/3  overflow-y-scroll absolute p-8">
           {/* Render image groups */}
           {imageGroups.map((group) => (
-            <div key={group.sub_prompt_id} className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">{group.sub_prompt_text}</h2>
-              <p className="text-gray-500 mb-2">Created at: {new Date(group.created_at).toLocaleString()}</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {group.images.map((image, index) => (
-                  <div key={image.id} className="relative group overflow-hidden rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
-                    <img className="w-full h-40 object-cover" src={`http://localhost:8000${image.url}`} alt={`Generated from prompt: ${group.sub_prompt_text}`} />
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                      {/* Optional overlay */}
+            <div key={group.sub_prompt_id} className="mb-8 mx-24 shadow-lg p-10 border rounded-2xl ">
+              <div
+                className="cursor-pointer"
+                onClick={() => openModal(group.images)}
+              >
+                <div className="text-2xl font-bold mb-4">{group.sub_prompt_text}</div>
+                <p className="text-gray-500 mb-2">
+                  Created at: {new Date(group.created_at).toLocaleString()}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {group.images.slice(0, 4).map((image, index) => (
+                    <div key={image.id} className="relative group overflow-hidden rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+                      <img className="w-full h-40 object-cover" src={`http://localhost:8000${image.url}`} alt={`Generated from prompt: ${group.sub_prompt_text}`} />
+                      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        {/* Optional overlay */}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           ))}
         </section>
       )}
+
+      {/* Modal to display images */}
+      {modalOpen && (
+        <Modal closeModal={closeModal}>
+          {currentImages.map((image) => (
+            <div key={image.id} className="relative group overflow-hidden rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+              <img className="w-full h-40 object-cover" src={`http://localhost:8000${image.url}`} alt="Generated Image" />
+              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                {/* Optional overlay */}
+              </div>
+            </div>
+          ))}
+        </Modal>
+      )}
+
       {/* Form for generating new images */}
       <section className="flex flex-col items-center w-full mb-0 animate-fade-in fixed bottom-0 p-4">
         <div className="bg-white rounded-lg shadow-2xl p-6 w-2/3">
