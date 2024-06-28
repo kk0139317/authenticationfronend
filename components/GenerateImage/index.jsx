@@ -160,16 +160,35 @@ const GenerateImages = ({ prompt }) => {
 
       {/* Modal to display images */}
       {modalOpen && (
+        // <Modal closeModal={closeModal}>
+        //   {currentImages.map((image) => (
+        //     <div key={image.id} className="relative group overflow-hidden rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
+        //       <img className="w-full h-40 object-cover" src={`http://localhost:8000${image.url}`} alt="Generated Image" />
+        //       <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+        //         {/* Optional overlay */}
+        //       </div>
+        //     </div>
+        //   ))}
+        // </Modal>
         <Modal closeModal={closeModal}>
-          {currentImages.map((image) => (
-            <div key={image.id} className="relative group overflow-hidden rounded-lg shadow-lg transform transition duration-500 hover:scale-105">
-              <img className="w-full h-40 object-cover" src={`http://localhost:8000${image.url}`} alt="Generated Image" />
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                {/* Optional overlay */}
-              </div>
-            </div>
-          ))}
-        </Modal>
+  {currentImages.map((image) => (
+    <div
+      key={image.id}
+      className="relative group overflow-hidden rounded-lg shadow-lg transform transition duration-500 hover:scale-105"
+      image={image}
+    >
+      <img
+        className="w-full h-40 object-cover"
+        src={`http://localhost:8000${image.url}`}
+        alt="Generated Image"
+      />
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+        {/* Optional overlay */}
+      </div>
+    </div>
+  ))}
+</Modal>
+
       )}
 
       {/* Form for generating new images */}
