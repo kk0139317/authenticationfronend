@@ -1,103 +1,243 @@
-// components/Drawer.js
-'use client';
-import { useState, useEffect } from 'react';
+// GenerateImages.jsx
+import React, { useState, useEffect } from 'react';
+import useAuthRedirect from '@/utils/useAuthRedirect';
 import { useAuth } from '@/utils/auth';
-import axios from 'axios';
+import Sidebar from './Sidebar';
+import ImageGrid from './ImageGrid';
+import Modal from '../Modal';
 
-const Drawer = ({ selectedPrompt, setSelectedPrompt, handleSubPromptSelect }) => {
-  const { username } = useAuth();
-  const [prompts, setPrompts] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDrawer = () => {
-    setIsOpen(!isOpen);
-  };
+const GenerateImages = ({ prompt }) => {
+  const [inputPrompt, setInputPrompt] = useState('');
+  const [numImages, setNumImages] = useState(1);
+  const [imageGroups, setImageGroups] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { token } = useAuthRedirect();
+  const { username, logout } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [currentImages, setCurrentImages] = useState([]);
+  const [drawerOpen, setDrawerOpen] = useState(false); // State for drawer visibility
 
   useEffect(() => {
-    const fetchPrompts = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8000/api/prompts/${username}`);
-        setPrompts(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error('Error fetching prompts:', error);
-      }
-    };
+    if (prompt) {
+      setInputPrompt(prompt.prompt);
+      fetchImages(prompt.id);
+    }
+  }, [prompt]);
 
-    fetchPrompts();
-  }, [username]);
+  const fetchImages = async (promptId) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:8000/api/fetch-images/?prompt=${promptId}`);
+      if (!response.ok) {
+        console.error('Failed to fetch images');
+        return;
+      }
+      const data = await response.json();
+      groupImagesBySubPrompt(data.images);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const groupImagesBySubPrompt = (images) => {
+    const groupedImages = images.reduce((groups, image) => {
+      const key = image.sub_prompt_id;
+      if (!groups[key]) {
+        groups[key] = {
+          sub_prompt_id: image.sub_prompt_id,
+          sub_prompt_text: image.sub_prompt_text,
+          created_at: image.created_at,
+          images: [],
+        };
+      }
+      groups[key].images.push({
+        id: image.id,
+        url: image.url,
+      });
+      return groups;
+    }, {});
+
+    const groupsArray = Object.values(groupedImages);
+    setImageGroups(groupsArray);
+  };
+
+  const handleGenerate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/generate-images/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: inputPrompt, numImages, username }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to generate images');
+        return;
+      }
+
+      const data = await response.json();
+      groupImagesBySubPrompt(data.images);
+    } catch (error) {
+      console.error('Error generating images:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openModal = (images) => {
+    setCurrentImages(images);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setCurrentImages([]);
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+
+      // Show image preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
-    <>
-      <button 
-        className="fixed top-4 right-4 z-50 bg-blue-500 text-white p-2 rounded"
-        onClick={toggleDrawer}
+    <div className="min-h-screen flex flex-col sm:flex-row">
+      {/* Sidebar Component */}
+      <Sidebar
+        inputPrompt={inputPrompt}
+        setInputPrompt={setInputPrompt}
+        numImages={numImages}
+        setNumImages={setNumImages}
+        handleGenerate={handleGenerate}
+        handleFileChange={handleFileChange}
+        imagePreview={imagePreview}
+      />
+
+      {/* Main Content Section */}
+      <main className="flex-1 py-4 px-0 sm:px-6 lg:px-8">
+        {loading ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <div role="status" className="max-w-sm p-4 border mx-4 border-gray-200 rounded shadow animate-pulse md:p-6 dark:border-gray-700">
+              {/* Loading indicator */}
+            </div>
+          </div>
+        ) : (
+          <ImageGrid imageGroups={imageGroups} openModal={openModal} />
+        )}
+
+        {/* Modal Component */}
+        {modalOpen && <Modal closeModal={closeModal} currentImages={currentImages} />}
+      </main>
+
+      {/* Toggle Button for Drawer (Mobile) */}
+      <button
+        className="fixed w-full right-0 bottom-0 sm:hidden bg-gray-500 bg-opacity-50 text-white p-4 rounded-tl-lg focus:outline-none"
+        onClick={() => setDrawerOpen((prevState) => !prevState)}
       >
-        {isOpen ? 'Close Drawer' : 'Open Drawer'}
+        {/* Arrow icon based on drawer state */}
+        {drawerOpen ? (
+          <svg
+            className="w-6 h-6 transform rotate-180"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        ) : (
+          <svg
+            className="w-6 mx-auto h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+          </svg>
+        )}
       </button>
-      <div className={`fixed top-0 right-0 h-full bg-white shadow-lg p-4 transition-transform transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} z-40 w-64 md:w-80`}>
-        <div className="h-full overflow-y-auto">
-          <ul className="space-y-4">
-            <a href="#">
-              <li className="flex justify-center items-center py-2 text-gray-600 text-xs uppercase font-semibold mb-2 hover:bg-gray-100 transition-colors duration-300">
-                New Prompts
-              </li>
-            </a>
-            {prompts.map((prompt, index) => (
-              <li
-                key={prompt.id}
-                className={`group flex flex-col items-start px-4 py-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-300 ${
-                  index === 0 ? 'border-t border-gray-200' : ''
-                }`}
-              >
-                <button
-                  onClick={() => setSelectedPrompt(prompt)}
-                  className="flex items-center space-x-3 w-full text-base font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      ></path>
-                    </svg>
-                  </div>
-                  <span className="truncate text-sm">{prompt.unique_id}</span>
-                </button>
-                <div className="flex w-full mt-1">
-                  <small className="text-xs font-light text-gray-500">
-                    {new Date(prompt.created_at).toLocaleString([], {
-                      dateStyle: 'short',
-                      timeStyle: 'short',
-                    })}
-                  </small>
-                </div>
-                <select
-                  className="mt-2 w-full border rounded-md py-1 px-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  onChange={(e) => handleSubPromptSelect(parseInt(e.target.value))}
-                >
-                  <option value="">Select a subprompt</option>
-                  {prompt.sub_prompts.map((subPrompt) => (
-                    <option key={subPrompt.id} value={subPrompt.id}>
-                      {subPrompt.prompt_text}
-                    </option>
-                  ))}
-                </select>
-              </li>
-            ))}
-          </ul>
+
+      {/* Bottom Drawer Section (Mobile) */}
+      <div
+        className={`fixed bottom-0 left-0 right-0 bg-white shadow-md sm:hidden transform transition duration-300 ${
+          drawerOpen ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <button
+          className="sm:hidden bg-gray-500 w-full bg-opacity-50 text-white p-4 rounded-tl-lg focus:outline-none"
+          onClick={() => setDrawerOpen((prevState) => !prevState)}
+        >
+          {/* Arrow icon based on drawer state */}
+          {drawerOpen ? (
+            <svg
+              className="w-6 h-6 mx-auto transform"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          ) : (
+            <svg
+              className="w-6 h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+            </svg>
+          )}
+        </button>
+        <div className="py-4 px-4 sm:px-6 lg:px-8">
+          <form onSubmit={handleGenerate} className="space-y-4">
+            <textarea
+              type="text"
+              value={inputPrompt}
+              onChange={(e) => setInputPrompt(e.target.value)}
+              placeholder="Enter your prompt..."
+              className="w-full p-2 border min-h-40 border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
+              required
+            />
+            <input
+              type="number"
+              value={numImages}
+              onChange={(e) => setNumImages(e.target.value)}
+              placeholder="Number of Images"
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
+              min="1"
+              max="10"
+              required
+            />
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-200"
+            >
+              Generate Images
+            </button>
+          </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default Drawer;
+export default GenerateImages;

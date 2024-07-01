@@ -64,7 +64,7 @@ const Modal = ({ closeModal, children }) => {
             </button>
             <img
               className="w-full h-auto object-cover rounded mb-4"
-              src={`http://localhost:8000${selectedImage.url}`}
+              src={`http://localhost:8000/${selectedImage.url}`}
               alt="Selected"
             />
             <div>

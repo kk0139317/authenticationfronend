@@ -1,4 +1,4 @@
-// pages/index.js
+// app/app/index.js
 'use client'
 import React, { useState } from 'react';
 import GenerateImages from '@/components/GenerateImage';

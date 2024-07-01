@@ -1,16 +1,21 @@
+// Component/GenerateImage/index.jsx
 import React, { useState, useEffect } from 'react';
 import useAuthRedirect from '@/utils/useAuthRedirect';
 import { useAuth } from '@/utils/auth';
 import Modal from '../Model';
+import Sidebar from './SideBar';
 
 const GenerateImages = ({ prompt }) => {
   const [inputPrompt, setInputPrompt] = useState('');
+  const [negetiveInputPrompt, setNegetiveInputPrompt] = useState('');
   const [numImages, setNumImages] = useState(1);
   const [imageGroups, setImageGroups] = useState([]);
   const [loading, setLoading] = useState(false);
   const { token } = useAuthRedirect();
   const { username, logout } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false); // State for drawer visibility
 
@@ -96,44 +101,35 @@ const GenerateImages = ({ prompt }) => {
     setModalOpen(false);
     setCurrentImages([]);
   };
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+
+      // Show image preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       {/* Sidebar Section */}
-      <aside
-  id="logo-sidebar"
-  className="fixed top-0 left-0 z-40 min-w-64 max-w-96 w-1/4 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 shadow-lg"
-  aria-label="Sidebar"
->
-<div className="h-full px-4 py-4 overflow-y-auto bg-white">
-        <form onSubmit={handleGenerate} className="space-y-4">
-          <textarea
-            type="text"
-            value={inputPrompt}
-            onChange={(e) => setInputPrompt(e.target.value)}
-            placeholder="Enter your prompt..."
-            className="w-full p-2 border min-h-40 border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
-            required
-          />
-          <input
-            type="number"
-            value={numImages}
-            onChange={(e) => setNumImages(e.target.value)}
-            placeholder="Number of Images"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
-            min="1"
-            max="10"
-            required
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-200"
-          >
-            Generate Images
-          </button>
-        </form>
-      </div>
-      </aside>
+      <Sidebar
+      inputPrompt={inputPrompt}
+      setInputPrompt={setInputPrompt}
+      numImages={numImages}
+      setNumImages={setNumImages}
+      handleGenerate={handleGenerate}
+      handleFileChange={handleFileChange}
+      imagePreview={imagePreview}
+      negetiveInputPrompt={negetiveInputPrompt}
+      setNegetiveInputPrompt={setNegetiveInputPrompt}
+      />
 
       {/* Main Content Section */}
       <main className="flex-1 py-4 px-0 sm:px-6 lg:px-8">

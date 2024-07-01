@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/utils/auth';
 import axios from 'axios';
-
+import { IoMdArrowDropright, IoMdArrowDropleft } from 'react-icons/io';
 const Drawer = ({ selectedPrompt, setSelectedPrompt, handleSubPromptSelect }) => {
   const { username } = useAuth();
   const [prompts, setPrompts] = useState([]);
@@ -29,13 +29,15 @@ const Drawer = ({ selectedPrompt, setSelectedPrompt, handleSubPromptSelect }) =>
 
   return (
     <>
+      <div className={`fixed top-0 right-0 h-full bg-white shadow-lg p-4 transition-transform transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} z-40 w-80`}>
       <button 
-        className="fixed top-4 right-4 z-50 bg-blue-500 text-white p-2 rounded"
+className={`relative ${isOpen ? 'right-10' : 'right-16'}  top-1/2 transform -translate-y-1/2 hover:text-6xl text-6xl z-50 text-gray-500 p-2 rounded`}
+
+
         onClick={toggleDrawer}
       >
-        {isOpen ? 'Close Drawer' : 'Open Drawer'}
+        {isOpen ? <IoMdArrowDropright /> : <IoMdArrowDropleft/>}
       </button>
-      <div className={`fixed top-0 right-0 h-full bg-white shadow-lg p-4 transition-transform transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} z-40 w-80`}>
         <div className="h-full overflow-y-auto">
           <ul className="space-y-4">
             <a href="#">
@@ -70,7 +72,7 @@ const Drawer = ({ selectedPrompt, setSelectedPrompt, handleSubPromptSelect }) =>
                       ></path>
                     </svg>
                   </div>
-                  <span className="truncate text-sm">{prompt.unique_id}</span>
+                  <span className="truncate text-sm">{prompt.master_prompt}</span>
                 </button>
                 <div className="flex w-full mt-1">
                   <small className="text-xs font-light text-gray-500">
@@ -79,8 +81,11 @@ const Drawer = ({ selectedPrompt, setSelectedPrompt, handleSubPromptSelect }) =>
                       timeStyle: 'short',
                     })}
                   </small>
+                  <small className="text-xs font-light text-gray-500">
+                    {prompt.num_img}
+                  </small>
                 </div>
-                <select
+                {/* <select
                   className="mt-2 w-full border rounded-md py-1 px-2 focus:ring-indigo-500 focus:border-indigo-500"
                   onChange={(e) => handleSubPromptSelect(parseInt(e.target.value))}
                 >
@@ -90,7 +95,7 @@ const Drawer = ({ selectedPrompt, setSelectedPrompt, handleSubPromptSelect }) =>
                       {subPrompt.prompt_text}
                     </option>
                   ))}
-                </select>
+                </select> */}
               </li>
             ))}
           </ul>
